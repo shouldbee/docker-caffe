@@ -1,0 +1,40 @@
+{
+  "variables": {
+    "aws_access_key": "",
+    "aws_secret_key": ""
+  },
+  "builders": [
+    {
+      "type": "amazon-ebs",
+      "access_key": "{{user `aws_access_key`}}",
+      "secret_key": "{{user `aws_secret_key`}}",
+      "region": "us-east-1",
+      "source_ami": "ami-763a311e",
+      "instance_type": "g2.2xlarge",
+      "ssh_username": "ubuntu",
+      "spot_price": "0.2",
+      "ami_name": "cuda-and-docker {{timestamp}}",
+      "availability_zone": "us-east-1d",
+      "launch_block_device_mappings": [
+        {
+          "device_name": "/dev/sdb",
+          "volume_type": "gp2",
+          "volume_size": 8,
+          "delete_on_termination": true
+        },
+        {
+          "device_name": "/dev/sda1",
+          "volume_type": "gp2",
+          "volume_size": 20,
+          "delete_on_termination": true
+        }
+      ]
+    }
+  ],
+  "provisioners": [
+    {
+      "type": "shell",
+      "script": "packer-provision.sh"
+    }
+  ]
+}
